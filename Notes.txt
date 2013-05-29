@@ -1,0 +1,9 @@
+Decoupling:
+http://www.gamedev.net/page/resources/_/technical/game-programming/managing-decoupling-r3034
+-Avoid frameworks, they create coupling.
+-Let the high level systems communicate instead of low level systems. Creates coupling in one place.
+-Use IDs and look them up. Lets you pass around objects all over the place easily.
+-Don't stress out too much about type casting. 99% of the time it will crash and be fixed.
+
+Component models:
+-the power of a component system comes from how you integrate it with script and data
