@@ -1,42 +1,38 @@
 #include <SFML/Graphics.hpp>
 
-#define WINDOW_WIDTH 1024
-#define WINDOW_HEIGHT 768
+#include "Time.h"
+#include "GameEntity.h"
+
+#include "Constants.h"
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Test");
-	//window.setFramerateLimit(60);
 
+	// How often we will update the game state
 	const int ticksPerSec = 25;
-	const int skipTicks = 1000 / ticksPerSec;
-	// don't update more than 5 times per loop if falling behind on updating game state
+	// Don't update more than 5 times per loop if falling behind on updating game state
     const int maxFrameSkip = 5;
     
-	sf::Texture texture;
-	texture.loadFromFile("resources/Zelda3Sheet1.gif", sf::IntRect(152, 653, 20, 30));
+	Engine::PlayerEntity player;
 	sf::Texture bgtexture;
 	bgtexture.loadFromFile("resources/lttp_map39.png", sf::IntRect(200, 200, WINDOW_WIDTH, WINDOW_HEIGHT));
-
-	sf::Sprite sprite;
-	sprite.setTexture(texture);
-	sprite.setPosition(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-	sprite.setScale(2.0f, 2.0f);
 
 	sf::Sprite background;
 	background.setTexture(bgtexture);
 	//background.setPosition(-200, -200);
 	background.setScale(2.0f, 2.0f);
 
-	sf::Clock clock;
+	Engine::GameClock clock(ticksPerSec);
+	clock.Start();
 	bool running = true;
-	unsigned int nextGameTick = clock.getElapsedTime().asMilliseconds();
 	
+	float interpolation;
 	int loops = 0;
     while (running)
     {
 		loops = 0;
-		while (running && clock.getElapsedTime().asMilliseconds() > nextGameTick && loops++ < maxFrameSkip)
+		while (running && clock.IsReady() && loops++ < maxFrameSkip)
 		{
 			// event handling
 			// updating
@@ -61,6 +57,7 @@ int main()
 				}
 			}
 
+			/*
 			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				sprite.move(-10,0);
 			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -69,13 +66,17 @@ int main()
 				sprite.move(10,0);
 			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				sprite.move(0,-10);
+			*/
+			player.Update();
 
-			nextGameTick += skipTicks;
+			clock.Advance();
 		}
+		
+		interpolation = clock.GetInterpolation();
 
         window.clear();
 		window.draw(background);
-        window.draw(sprite);
+		player.Render(window);
         window.display();
     }
 
