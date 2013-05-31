@@ -1,0 +1,22 @@
+Code designs:
+
+Game loop management:
+-Create states which are pushed and popped.
+	-https://github.com/FRex/Man
+	-For example the main menu is just a state that is pushed initially, then depending on button presses new states are pushed on top of those.
+	-Each state is like a game loop of it's own with keys and window.
+	-There is a state manager which calls run on the states.
+	-Pausing is just another state that is pushed on top of the game itself
+-Split window poll events and game engine events up.
+	-https://github.com/FRex/Man
+	-while(window->pollEvent) then while(engine.pollEvent)
+	
+Decoupling:
+http://www.gamedev.net/page/resources/_/technical/game-programming/managing-decoupling-r3034
+-Avoid frameworks, they create coupling.
+-Let the high level systems communicate instead of low level systems. Creates coupling in one place.
+-Use IDs and look them up. Lets you pass around objects all over the place easily.
+-Don't stress out too much about type casting. 99% of the time it will crash and be fixed.
+
+Component models:
+-the power of a component system comes from how you integrate it with script and data
