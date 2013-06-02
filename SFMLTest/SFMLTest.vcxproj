@@ -88,6 +88,7 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GameEntity.h" />
+    <ClInclude Include="Log.h" />
     <ClInclude Include="Time.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

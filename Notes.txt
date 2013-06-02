@@ -20,3 +20,8 @@ http://www.gamedev.net/page/resources/_/technical/game-programming/managing-deco
 
 Component models:
 -the power of a component system comes from how you integrate it with script and data
+
+Interpolation with speed/movement:
+-If I am updating 25 times per sec, yet I am rendering at 50 FPS, then I can update 25 times, and draw twice between updates.
+-I need to track if FORWARD was being held during an update. If it then my position is position + (speed * interpolation)
+

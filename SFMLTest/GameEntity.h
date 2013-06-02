@@ -8,25 +8,36 @@ namespace Engine {
 class GameEntity
 {
 public:
-	GameEntity() : x(0), y(0) {}
+	GameEntity() : m_posx(0), m_posy(0), m_speed(0.0f), diagonalFactor(0.7071f) {}
 
-	virtual bool Update() = 0;
+	virtual bool Update(float interpolation) = 0;
 	virtual	bool Render(sf::RenderWindow& window) = 0;
 
 	// Position
-	int x;
-	int y;
+	int m_posx;
+	int m_posy;
+
+	// Rendering
+	// diagonal speed is spd = sqrt(spd_x^2 + spd_y^2)
+	// or just 0.7071 * speed
+	float m_speed;
+	const float diagonalFactor;
 };
 
-class PlayerEntity : public GameEntity
+class UnitEntity : public GameEntity
 {
 public:
-	PlayerEntity();
+	UnitEntity();
 
-	virtual bool Update();
+	virtual bool Update(float interpolation);
 	virtual bool Render(sf::RenderWindow& window);
 
 private:
+	bool m_movingUp;
+	bool m_movingDown;
+	bool m_movingLeft;
+	bool m_movingRight;
+
 	sf::Texture m_texture;
 	sf::Sprite m_sprite;
 };

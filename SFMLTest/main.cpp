@@ -4,6 +4,7 @@
 #include "GameEntity.h"
 
 #include "Constants.h"
+#include "Log.h"
 
 int main()
 {
@@ -14,7 +15,7 @@ int main()
 	// Don't update more than 5 times per loop if falling behind on updating game state
     const int maxFrameSkip = 5;
     
-	Engine::PlayerEntity player;
+	Engine::UnitEntity player;
 	sf::Texture bgtexture;
 	bgtexture.loadFromFile("resources/lttp_map39.png", sf::IntRect(200, 200, WINDOW_WIDTH, WINDOW_HEIGHT));
 
@@ -57,22 +58,14 @@ int main()
 				}
 			}
 
-			/*
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-				sprite.move(-10,0);
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-				sprite.move(0,10);
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-				sprite.move(10,0);
-			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-				sprite.move(0,-10);
-			*/
-			player.Update();
-
 			clock.Advance();
 		}
 		
 		interpolation = clock.GetInterpolation();
+
+		player.Update(interpolation);
+
+		//LOGDEBUG << "Interp is " << interpolation;
 
         window.clear();
 		window.draw(background);

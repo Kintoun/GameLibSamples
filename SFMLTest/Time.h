@@ -29,7 +29,7 @@ public:
 
 	float GetInterpolation()
 	{
-		return std::chrono::duration<float>( Elapsed() + m_skipTicks - m_nextGameTick ) / std::chrono::duration<float>( m_skipTicks );
+		return duration<float>( Elapsed() + m_skipTicks - m_nextGameTick ) / duration<float>( m_skipTicks );
 	}
 
 private:
