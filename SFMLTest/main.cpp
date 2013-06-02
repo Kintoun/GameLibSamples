@@ -24,14 +24,25 @@ int main()
 	//background.setPosition(-200, -200);
 	background.setScale(2.0f, 2.0f);
 
+	// FPS counter
+	sf::Font font;
+	bool success = font.loadFromFile("resources/fonts/arial.ttf");
+	sf::Text fps("", font, 30);
+	fps.setColor(sf::Color::Green);
+	fps.setStyle(sf::Text::Bold);
+	unsigned int frameCount = 0;
+
 	Engine::GameClock clock(ticksPerSec);
 	clock.Start();
+	auto fpsTimer = clock.Now();
 	bool running = true;
 	
 	float interpolation;
 	int loops = 0;
     while (running)
     {
+		frameCount++;
+
 		loops = 0;
 		while (running && clock.IsReady() && loops++ < maxFrameSkip)
 		{
@@ -67,9 +78,21 @@ int main()
 
 		//LOGDEBUG << "Interp is " << interpolation;
 
+		auto now = clock.Now();
+		auto elapsed = now - fpsTimer;
+		if (elapsed > std::chrono::seconds(1))
+		{
+			std::stringstream ss;
+			ss << frameCount;
+			fps.setString(ss.str());
+			fpsTimer = now;
+			frameCount = 0;
+		}
+
         window.clear();
 		window.draw(background);
 		player.Render(window);
+		window.draw(fps);
         window.display();
     }
 

@@ -42,4 +42,11 @@ bool UnitEntity::Render(sf::RenderWindow& window)
 	return true;
 }
 
+TextEntity::TextEntity(const char* font) :
+	GameEntity()
+{
+	m_font.loadFromFile(font);
+	m_text = sf::Text("###", m_font, 250);
+}
+
 } // namespace Engine

@@ -63,7 +63,7 @@ protected:
 	std::ostringstream os;
 
 private:
-	std::stringstream NowTime();
+	std::string NowTime();
 	LogLevel logLevel;
 
 	// non-copyable
@@ -80,15 +80,15 @@ Log::~Log()
 	fflush(stderr);
 }
 
-std::stringstream Log::NowTime()
+std::string Log::NowTime()
 {
 	std::stringstream buffer;
 	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
 	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
 	std::stringstream output;
 	std::tm tm = *std::localtime(&now_c);
-	output << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << '\n';
-	return output;
+	output << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
+	return output.str();
 }
 
 std::ostringstream& Log::Get(LogLevel level)

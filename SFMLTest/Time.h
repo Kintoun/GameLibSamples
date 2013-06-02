@@ -26,6 +26,8 @@ public:
 	bool IsReady() { return Elapsed() > m_nextGameTick; }
 
 	high_resolution_clock::duration Elapsed() const { return high_resolution_clock::now() - epoch; }
+	
+	high_resolution_clock::time_point Now() const { return high_resolution_clock::now(); }
 
 	float GetInterpolation()
 	{

@@ -24,6 +24,19 @@ public:
 	const float diagonalFactor;
 };
 
+class TextEntity : public GameEntity
+{
+public:
+	TextEntity(const char * font);
+
+	virtual bool Update(float interpolation) { return true; }
+	virtual bool Render(sf::RenderWindow& window) { return true; }
+
+private:
+	sf::Font m_font;
+	sf::Text m_text;
+};
+
 class UnitEntity : public GameEntity
 {
 public:
