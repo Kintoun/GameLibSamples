@@ -33,54 +33,60 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Test");
 
-	// How often we will update the game state
-	const int ticksPerSec = 25;
 	// Don't update more than 5 times per loop if falling behind on updating game state
-    const int maxFrameSkip = 5;
+    const int MAXFRAMESKIP = 5;
 	
-	// FPS cap
+	// Vsync (FPS cap)
 	//window.setFramerateLimit(60);
     
 	Engine::UnitEntity player;
 	sf::Texture bgtexture;
 	bgtexture.loadFromFile("resources/lttp_map39.png", sf::IntRect(200, 200, WINDOW_WIDTH, WINDOW_HEIGHT));
-
 	sf::Sprite background;
 	background.setTexture(bgtexture);
-	//background.setPosition(-200, -200);
 	background.setScale(2.0f, 2.0f);
+
+	// How often we will update the game state
+	const int TICKSPERSEC = 25;
+	Engine::GameClock clock(TICKSPERSEC);
+	clock.Start();
 
 	// Debug text
 	Engine::DebugTextEntity debugText(player);
 	unsigned int frameCount = 0;
-
-	Engine::GameClock clock(ticksPerSec);
-	clock.Start();
 	auto fpsTimer = clock.Now();
-	bool running = true;
-	
+
 	float interpolation;
+	bool running = true;
 	int loops = 0;
+
+	// order detemrines render order
+	std::vector<Engine::GameEntity*> entities;
+	entities.push_back(&player);
+	entities.push_back(&debugText);
+
     while (running)
     {
 		frameCount++;
 
 		loops = 0;
-		while (running && clock.IsReady() && loops++ < maxFrameSkip)
+		while (running && clock.IsReady() && loops++ < MAXFRAMESKIP)
 		{
-			LOGDEBUG << "Game Tick " << clock.GetGameTick();
+			//LOGDEBUG << "Game Tick " << clock.GetGameTick();
 
 			// event handling
 			// updating
 			running = HandleWindowEvents(window);
-			player.Update();
-			debugText.Update();
+			for (Engine::GameEntity* e : entities)
+			{
+				e->Update();
+			}
 
 			clock.Advance();
 		}
 		
 		interpolation = clock.GetInterpolation();
-		LOGDEBUG << "Interp is: " << interpolation;
+		//LOGDEBUG << "Interp is: " << interpolation;
 		
 		auto now = clock.Now();
 		auto elapsed = now - fpsTimer;
@@ -93,8 +99,10 @@ int main()
 
         window.clear();
 		//window.draw(background);
-		player.Render(window, interpolation);
-		debugText.Render(window, interpolation);
+		for (Engine::GameEntity* e : entities)
+		{
+			e->Render(window, interpolation);
+		}
         window.display();
     }
 

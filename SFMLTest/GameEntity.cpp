@@ -51,7 +51,7 @@ bool UnitEntity::Update()
 
 	m_prevPos = m_pos;
 	m_pos += m_velocity;
-	LOGDEBUG << "Position X: " << m_pos.x << " Y: " << m_pos.y;
+	//LOGDEBUG << "Position X: " << m_pos.x << " Y: " << m_pos.y;
 
 	return true;
 }
@@ -61,7 +61,7 @@ bool UnitEntity::Render(sf::RenderWindow& window, float interpolation)
 	// differnece between last pos and cur, times interp, plus prev pos
 	sf::Vector2f renderPos = m_prevPos + ((m_pos - m_prevPos) * interpolation);
 	m_sprite.setPosition(renderPos);
-	LOGDEBUG << "Prediction X: " << renderPos.x << " Y: " << renderPos.y;
+	//LOGDEBUG << "Prediction X: " << renderPos.x << " Y: " << renderPos.y;
 
 	window.draw(m_sprite);
 	return true;

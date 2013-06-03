@@ -20,7 +20,6 @@ public:
 	virtual	bool Render(sf::RenderWindow& window, float interpolation) = 0;
 
 	const sf::Vector2f& GetPos() const { return m_pos; }
-	const sf::Vector2f& GetRenderPos() const { return m_prevPos; }
 
 protected:
 	// Position
@@ -44,6 +43,8 @@ public:
 	virtual bool Update() override;
 	virtual bool Render(sf::RenderWindow& window, float interpolation) override;
 	//virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+	const sf::Vector2f& GetRenderPos() const { return m_sprite.getPosition(); }
 
 private:
 	bool m_movingUp;
