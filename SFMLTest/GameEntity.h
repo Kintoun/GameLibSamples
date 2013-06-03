@@ -1,40 +1,39 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 
 namespace Engine {
 
-//class sf::RenderWindow;
 class GameEntity
 {
 public:
-	GameEntity() : m_posx(0), m_posy(0), m_speed(0.0f), diagonalFactor(0.7071f) {}
+	GameEntity() : m_baseSpeed(0.0f), k_diagonalFactor(0.7071f) {}
 
-	virtual bool Update(float interpolation) = 0;
-	virtual	bool Render(sf::RenderWindow& window) = 0;
+	// Sets the state of an obj. Includes position, speed, direction, etc.
+	// Called once per game tick NOT once per render call.
+	virtual bool Update() = 0;
 
+	// Based on the game tick position, determines the interpolated position
+	// and renders the obj at that position. Does not alter the actual
+	// position of the obj, that is the job of Update()
+	virtual	bool Render(sf::RenderWindow& window, float interpolation) = 0;
+
+	const sf::Vector2f& GetPos() const { return m_pos; }
+	const sf::Vector2f& GetRenderPos() const { return m_predpos; }
+
+protected:
 	// Position
-	int m_posx;
-	int m_posy;
-
-	// Rendering
-	// diagonal speed is spd = sqrt(spd_x^2 + spd_y^2)
-	// or just 0.7071 * speed
-	float m_speed;
-	const float diagonalFactor;
-};
-
-class TextEntity : public GameEntity
-{
-public:
-	TextEntity(const char * font);
-
-	virtual bool Update(float interpolation) { return true; }
-	virtual bool Render(sf::RenderWindow& window) { return true; }
-
-private:
-	sf::Font m_font;
-	sf::Text m_text;
+	sf::Vector2f m_pos;
+	
+	// Prediction position for the purpose of interpolation
+	sf::Vector2f m_predpos;
+	
+	// Our actual velocity (i.e. less if moving diagonal)
+	sf::Vector2f m_velocity;
+	// Our base speed
+	float m_baseSpeed;
+	const float k_diagonalFactor;
 };
 
 class UnitEntity : public GameEntity
@@ -42,17 +41,44 @@ class UnitEntity : public GameEntity
 public:
 	UnitEntity();
 
-	virtual bool Update(float interpolation);
-	virtual bool Render(sf::RenderWindow& window);
+	virtual bool Update() override;
+	virtual bool Render(sf::RenderWindow& window, float interpolation) override;
+	//virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
 	bool m_movingUp;
 	bool m_movingDown;
 	bool m_movingLeft;
 	bool m_movingRight;
-
+	
 	sf::Texture m_texture;
+
+	// The drawable obj. Note that the sprites position is NOT
+	// the objs position. The sprite is used for rendering,
+	// the position is in the position vector.
 	sf::Sprite m_sprite;
+};
+
+class DebugTextEntity : public GameEntity
+{
+public:
+	DebugTextEntity(const UnitEntity& player);
+
+	virtual bool Update() override;
+	virtual bool Render(sf::RenderWindow& window, float interpolation) override;
+
+	void SetFps(unsigned int fps) { m_fps = fps; }
+
+private:
+	// Used for position debug text
+	const UnitEntity& m_player;
+
+	sf::Font m_font;
+	sf::Text m_fpsText;
+	sf::Text m_playerPosText;
+	sf::Text m_playerRenderPosText;
+
+	unsigned int m_fps;
 };
 
 } // namespace Engine

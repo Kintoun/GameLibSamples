@@ -4,7 +4,30 @@
 #include "GameEntity.h"
 
 #include "Constants.h"
+#include <sstream>
 #include "Log.h"
+
+bool HandleWindowEvents(sf::RenderWindow& window)
+{
+	sf::Event event;
+	while (window.pollEvent(event))
+	{
+		switch (event.type)
+		{
+			case sf::Event::Closed:
+				return false;
+
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::Escape)
+					return false;
+				break;
+
+			default:
+				break;
+		}
+	}
+	return true;
+}
 
 int main()
 {
@@ -14,6 +37,9 @@ int main()
 	const int ticksPerSec = 25;
 	// Don't update more than 5 times per loop if falling behind on updating game state
     const int maxFrameSkip = 5;
+	
+	// FPS cap
+	//window.setFramerateLimit(60);
     
 	Engine::UnitEntity player;
 	sf::Texture bgtexture;
@@ -24,12 +50,8 @@ int main()
 	//background.setPosition(-200, -200);
 	background.setScale(2.0f, 2.0f);
 
-	// FPS counter
-	sf::Font font;
-	bool success = font.loadFromFile("resources/fonts/arial.ttf");
-	sf::Text fps("", font, 30);
-	fps.setColor(sf::Color::Green);
-	fps.setStyle(sf::Text::Bold);
+	// Debug text
+	Engine::DebugTextEntity debugText(player);
 	unsigned int frameCount = 0;
 
 	Engine::GameClock clock(ticksPerSec);
@@ -46,53 +68,33 @@ int main()
 		loops = 0;
 		while (running && clock.IsReady() && loops++ < maxFrameSkip)
 		{
+			LOGDEBUG << "Game Tick " << clock.GetGameTick();
+
 			// event handling
 			// updating
-			sf::Event event;
-			while (window.pollEvent(event))
-			{
-				switch (event.type)
-				{
-					case sf::Event::Closed:
-						running = false;
-						break;
-
-					case sf::Event::KeyPressed:
-						if (event.key.code == sf::Keyboard::Escape)
-						{
-							running = false;
-						}
-						break;
-
-					default:
-						break;
-				}
-			}
+			running = HandleWindowEvents(window);
+			player.Update();
+			debugText.Update();
 
 			clock.Advance();
 		}
 		
 		interpolation = clock.GetInterpolation();
-
-		player.Update(interpolation);
-
-		//LOGDEBUG << "Interp is " << interpolation;
-
+		LOGDEBUG << "Interp is: " << interpolation;
+		
 		auto now = clock.Now();
 		auto elapsed = now - fpsTimer;
 		if (elapsed > std::chrono::seconds(1))
 		{
-			std::stringstream ss;
-			ss << frameCount;
-			fps.setString(ss.str());
+			debugText.SetFps(frameCount);
 			fpsTimer = now;
 			frameCount = 0;
 		}
 
         window.clear();
 		window.draw(background);
-		player.Render(window);
-		window.draw(fps);
+		player.Render(window, interpolation);
+		debugText.Render(window, interpolation);
         window.display();
     }
 

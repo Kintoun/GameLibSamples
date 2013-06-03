@@ -11,7 +11,7 @@ namespace Engine {
 class GameClock
 {
 public:	
-	GameClock(int ticksPerSec) : m_skipTicks(1000 / ticksPerSec) {}
+	GameClock(int ticksPerSec) : m_skipTicks(1000 / ticksPerSec), m_gameTicks(1) {}
 
 	void Start()
 	{
@@ -21,7 +21,13 @@ public:
 	
 	void Restart() { Start(); }
 
-	void Advance() { m_nextGameTick += m_skipTicks; }
+	void Advance()
+	{
+		m_nextGameTick += m_skipTicks;
+		m_gameTicks++;
+	}
+
+	uint64_t GetGameTick() { return m_gameTicks; }
 
 	bool IsReady() { return Elapsed() > m_nextGameTick; }
 
@@ -42,6 +48,9 @@ private:
 
 	// Tracks when we should be allowed to "trigger" again
 	high_resolution_clock::duration m_nextGameTick;
+
+	// Total amount of game ticks since start of program
+	uint64_t m_gameTicks;
 };
 
 } // namespace Engine
