@@ -15,6 +15,7 @@ UnitEntity::UnitEntity() :
 
 	m_sprite.setTexture(m_texture);
 	m_pos = sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+	m_prevPos = m_pos;
 	m_sprite.setPosition(m_pos);
 	m_sprite.setScale(2.0f, 2.0f);
 	 
@@ -48,9 +49,8 @@ bool UnitEntity::Update()
 	if (m_movingUp)
 		m_velocity += sf::Vector2f(0, -speed);
 
+	m_prevPos = m_pos;
 	m_pos += m_velocity;
-	m_predpos = m_pos;
-	m_sprite.setPosition(m_pos);
 	LOGDEBUG << "Position X: " << m_pos.x << " Y: " << m_pos.y;
 
 	return true;
@@ -58,10 +58,10 @@ bool UnitEntity::Update()
 
 bool UnitEntity::Render(sf::RenderWindow& window, float interpolation)
 {
-	//m_sprite.move(m_velocity);
-	m_predpos = m_pos + (m_velocity * interpolation);
-	m_sprite.setPosition(m_predpos);
-	LOGDEBUG << "Prediction X: " << m_predpos.x << " Y: " << m_predpos.y;
+	// differnece between last pos and cur, times interp, plus prev pos
+	sf::Vector2f renderPos = m_prevPos + ((m_pos - m_prevPos) * interpolation);
+	m_sprite.setPosition(renderPos);
+	LOGDEBUG << "Prediction X: " << renderPos.x << " Y: " << renderPos.y;
 
 	window.draw(m_sprite);
 	return true;

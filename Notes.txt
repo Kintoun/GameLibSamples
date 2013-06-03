@@ -23,4 +23,10 @@ Component models:
 
 Interpolation with speed/movement:
 -If I am updating 25 times per sec, yet I am rendering at 50 FPS, then I can update 25 times, and draw twice between updates.
--I need to track if FORWARD was being held during an update. If it then my position is position + (speed * interpolation)
+-The update code sets the game tick position of the player. The render code sets the position of the sprite that represents the player.
+-In the case with 2 render calls per game update (25 ticks per sec, 50 FPS), When the player holds forward, we move forward X units in game logic.
+ However in render logic since we know we get 2 render calls, we move the SPRITE forward x/2 units, call render, then x/2 again and call render again (2 renders).
+-Collisions, physics, etc work off of the game state pos, NOT the sprite position (render pos). There is no "lag" per-se. In fact we vastly smooth things out.
+-Imagine the case where we update 25 times per sec, but render at uncapped, say 1000, FPS. Our animations would be dead smooth, but our game logic wouldn't be
+ overburdened since it is only working at the rate of 25 ticksPerSec. The main game loop calculates the interpolation between 2 game ticks, and uses that information
+ to smooth out the rendering between game ticks.

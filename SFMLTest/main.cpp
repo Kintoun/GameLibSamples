@@ -92,7 +92,7 @@ int main()
 		}
 
         window.clear();
-		window.draw(background);
+		//window.draw(background);
 		player.Render(window, interpolation);
 		debugText.Render(window, interpolation);
         window.display();

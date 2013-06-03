@@ -20,14 +20,14 @@ public:
 	virtual	bool Render(sf::RenderWindow& window, float interpolation) = 0;
 
 	const sf::Vector2f& GetPos() const { return m_pos; }
-	const sf::Vector2f& GetRenderPos() const { return m_predpos; }
+	const sf::Vector2f& GetRenderPos() const { return m_prevPos; }
 
 protected:
 	// Position
 	sf::Vector2f m_pos;
 	
-	// Prediction position for the purpose of interpolation
-	sf::Vector2f m_predpos;
+	// Previous position for the purpose of interpolation
+	sf::Vector2f m_prevPos;
 	
 	// Our actual velocity (i.e. less if moving diagonal)
 	sf::Vector2f m_velocity;
