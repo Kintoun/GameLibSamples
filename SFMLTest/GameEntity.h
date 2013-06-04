@@ -1,10 +1,11 @@
 #pragma once
 
+#include "Textures.h"
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
 namespace Engine {
-
 class GameEntity
 {
 public:
@@ -51,6 +52,8 @@ private:
 	bool m_movingDown;
 	bool m_movingLeft;
 	bool m_movingRight;
+
+	PlayerTexData texData;
 	
 	sf::Texture m_texture;
 
@@ -58,6 +61,8 @@ private:
 	// the objs position. The sprite is used for rendering,
 	// the position is in the position vector.
 	sf::Sprite m_sprite;
+
+	std::vector<sf::Vector2u> m_walkVec;
 };
 
 class DebugTextEntity : public GameEntity

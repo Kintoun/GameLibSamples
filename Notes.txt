@@ -30,3 +30,16 @@ Interpolation with speed/movement:
 -Imagine the case where we update 25 times per sec, but render at uncapped, say 1000, FPS. Our animations would be dead smooth, but our game logic wouldn't be
  overburdened since it is only working at the rate of 25 ticksPerSec. The main game loop calculates the interpolation between 2 game ticks, and uses that information
  to smooth out the rendering between game ticks.
+
+Link sprite sheet breakdown:
+Idle 90x13
+  1 16x22
+Walk
+  1 16x22, 122x13
+  2 16x23, 149x12
+  3 16x24, 174x11
+  4 16x22, 197x13
+  5 16x23, 223x12
+  6 16x24, 249x11
+  7 16x22, 272x13
+  8 16x22, 298x13

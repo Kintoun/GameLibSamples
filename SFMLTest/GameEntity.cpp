@@ -11,13 +11,13 @@ UnitEntity::UnitEntity() :
 	m_movingRight(false), GameEntity()
 {
 	// TODO: Asset strings should be looked up somewhere
-	m_texture.loadFromFile("resources/Zelda3Sheet1.gif", sf::IntRect(152, 653, 20, 30));
+	m_texture.loadFromFile(texData.GetSheet(), texData.idleRects[0]);
 
 	m_sprite.setTexture(m_texture);
 	m_pos = sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 	m_prevPos = m_pos;
 	m_sprite.setPosition(m_pos);
-	m_sprite.setScale(2.0f, 2.0f);
+	m_sprite.setScale(4.0f, 4.0f);
 	 
 	m_baseSpeed = 10.0f;
 }
@@ -43,11 +43,28 @@ bool UnitEntity::Update()
 	if (m_movingLeft)
 		m_velocity += sf::Vector2f(-speed, 0);
 	if (m_movingDown)
+	{
 		m_velocity += sf::Vector2f(0, speed);
+
+		if (++texData.aniDurCur > texData.aniDuration || texData.aniDurCur == 9999)
+		{
+			unsigned int aniKey = texData.aniFrame++ % texData.walkDownFrames;
+			m_texture.loadFromFile(texData.GetSheet(), texData.walkDownRects[aniKey]);
+			texData.aniDurCur = 0;
+		}
+	}
 	if (m_movingRight)
 		m_velocity += sf::Vector2f(speed, 0);
 	if (m_movingUp)
 		m_velocity += sf::Vector2f(0, -speed);
+
+	// Idle
+	if (!m_movingDown && !m_movingUp && !m_movingLeft && !m_movingRight)
+	{
+		m_texture.loadFromFile(texData.GetSheet(), texData.idleRects[0]);
+		texData.aniFrame = 0;
+		texData.aniDurCur = 9999;
+	}
 
 	m_prevPos = m_pos;
 	m_pos += m_velocity;
