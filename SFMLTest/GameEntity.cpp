@@ -7,68 +7,63 @@
 namespace Engine {
 
 UnitEntity::UnitEntity() :
-	m_movingUp(false), m_movingDown(false), m_movingLeft(false),
-	m_movingRight(false), GameEntity()
+	GameEntity(), m_animation(TextureSet::PLAYER_TEXTURES, 2), m_moveDirection(0)
 {
-	// TODO: Asset strings should be looked up somewhere
-	m_texture.loadFromFile(texData.GetSheet(), texData.idleRects[0]);
-
-	m_sprite.setTexture(m_texture);
-	m_pos = sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+	m_pos = sf::Vector2f(k_windowWidth / 2, k_windowHeight / 2);
 	m_prevPos = m_pos;
-	m_sprite.setPosition(m_pos);
-	m_sprite.setScale(4.0f, 4.0f);
+	//m_sprite.setPosition(m_pos);
 	 
 	m_baseSpeed = 10.0f;
 }
 
 bool UnitEntity::Update()
 {
-	m_movingUp = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
-	m_movingDown = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
-	m_movingLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
-	m_movingRight = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+	m_moveDirection = 0;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		m_moveDirection |= Direction::UP;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		m_moveDirection |= Direction::DOWN;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		m_moveDirection |= Direction::LEFT;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		m_moveDirection |= Direction::RIGHT;
 
 	// reset to base speed
 	float speed = m_baseSpeed;
 	m_velocity = sf::Vector2f();
 
-	if (m_movingUp && (m_movingLeft || m_movingRight)
-		|| m_movingDown && (m_movingLeft || m_movingRight))
+	// moving diagonally
+	if ((m_moveDirection & Direction::LEFT || m_moveDirection & Direction::RIGHT)
+		&& (m_moveDirection & Direction::DOWN || m_moveDirection & Direction::UP))
 	{
 		speed *= k_diagonalFactor;
 	}
 
 	// TODO: I'm sure there is a better mathy way to do this...
-	if (m_movingLeft)
+	if (m_moveDirection & Direction::LEFT)
 		m_velocity += sf::Vector2f(-speed, 0);
-	if (m_movingDown)
+	if (m_moveDirection & Direction::DOWN)
 	{
 		m_velocity += sf::Vector2f(0, speed);
-
+		/*
 		if (++texData.aniDurCur > texData.aniDuration || texData.aniDurCur == 9999)
 		{
 			unsigned int aniKey = texData.aniFrame++ % texData.walkDownFrames;
 			m_texture.loadFromFile(texData.GetSheet(), texData.walkDownRects[aniKey]);
 			texData.aniDurCur = 0;
 		}
+		*/
 	}
-	if (m_movingRight)
+	if (m_moveDirection & Direction::RIGHT)
 		m_velocity += sf::Vector2f(speed, 0);
-	if (m_movingUp)
+	if (m_moveDirection & Direction::UP)
 		m_velocity += sf::Vector2f(0, -speed);
-
-	// Idle
-	if (!m_movingDown && !m_movingUp && !m_movingLeft && !m_movingRight)
-	{
-		m_texture.loadFromFile(texData.GetSheet(), texData.idleRects[0]);
-		texData.aniFrame = 0;
-		texData.aniDurCur = 9999;
-	}
 
 	m_prevPos = m_pos;
 	m_pos += m_velocity;
 	//LOGDEBUG << "Position X: " << m_pos.x << " Y: " << m_pos.y;
+
+	m_animation.Update(m_moveDirection);
 
 	return true;
 }
@@ -77,11 +72,18 @@ bool UnitEntity::Render(sf::RenderWindow& window, float interpolation)
 {
 	// differnece between last pos and cur, times interp, plus prev pos
 	sf::Vector2f renderPos = m_prevPos + ((m_pos - m_prevPos) * interpolation);
-	m_sprite.setPosition(renderPos);
+	m_animation.Render(window, renderPos);
 	//LOGDEBUG << "Prediction X: " << renderPos.x << " Y: " << renderPos.y;
-
-	window.draw(m_sprite);
+	
 	return true;
+}
+
+const sf::Vector2f& UnitEntity::GetRenderPos() const
+{
+	if (m_animation.GetSprite())
+		return m_animation.GetSprite()->getPosition();
+	else
+		return sf::Vector2f(); // TODO: Yea, don't do this...
 }
 
 DebugTextEntity::DebugTextEntity(const UnitEntity& player) :

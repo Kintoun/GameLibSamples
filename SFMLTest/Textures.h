@@ -1,39 +1,54 @@
 #pragma once
 
+#include "Constants.h"
+
 #include <SFML/Graphics.hpp>
 
 namespace Engine {
 
-// TODO: Oh god this screams for auto code generation
-struct PlayerTexData
+enum class TextureSet
 {
-	PlayerTexData() : aniFrame(0), aniDuration(2), aniDurCur(9999)
-	{
-		idleFrames = 1;
-		idleRects[0] = sf::IntRect(90,13, 16, 22);
-		
-		walkDownFrames = 8;
-		walkDownRects[0] = sf::IntRect(122,13, 16, 22);
-		walkDownRects[1] = sf::IntRect(149,12, 16, 23);
-		walkDownRects[2] = sf::IntRect(174,11, 16, 24);
-		walkDownRects[3] = sf::IntRect(197,13, 16, 22);
-		walkDownRects[4] = sf::IntRect(223,12, 16, 23);
-		walkDownRects[5] = sf::IntRect(249,11, 16, 24);
-		walkDownRects[6] = sf::IntRect(272,13, 16, 22);
-		walkDownRects[7] = sf::IntRect(298,13, 16, 22);
-	}
+	PLAYER_TEXTURES,
 
-	const char* GetSheet() { return "resources/Link-LTTP.gif"; }
+	NUM_TEXTURE_SETS
+};
 
-	unsigned int idleFrames;
-	sf::IntRect idleRects[1];
+struct CardinalRects
+{
+	std::vector<sf::IntRect> up;
+	std::vector<sf::IntRect> down;
+	std::vector<sf::IntRect> left;
+	std::vector<sf::IntRect> right;
+};
+
+// TODO: Use autocode generation and compile time constructed objs
+// TODO: Fix the raw art strips to support this, positions are currently scattered
+struct TextureData
+{
+	TextureData(const char* spriteSheet);
+
+	const std::string& GetSheet() const { return m_spriteSheet; }
 	
-	unsigned int walkDownFrames;
-	sf::IntRect walkDownRects[8];
+	void SetIdle(unsigned int direction, unsigned int frame, unsigned int& size);
+	void SetWalking(unsigned int direction, unsigned int frame, unsigned int& size);
+	
+	std::vector<sf::IntRect> idle;
+	CardinalRects walking;
 
-	unsigned int aniFrame;
-	unsigned int aniDurCur;
-	const unsigned int aniDuration;
+	sf::Texture texture;
+	sf::Sprite sprite;
+	std::string m_spriteSheet;
+};
+
+struct PlayerTexData : public TextureData
+{
+	PlayerTexData();
+};
+
+class TextureDataFactory
+{
+public:
+	static TextureData* Create(TextureSet set);
 };
 
 } //namespace Engine

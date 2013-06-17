@@ -39,7 +39,7 @@ std::ostringstream& Log::Get(LogLevel level)
 	os << "- " << NowTime();
 	os << " " << s_logLevelString[level] << ": ";
 	// indentation = more details
-	os << std::string(level > LOG_DEBUG ? 0 : level - LOG_DEBUG, '\t');
+	os << std::string(level > LOG_DEBUG ? level - LOG_DEBUG : 0, '\t');
 	logLevel = level;
 	return os;
 }

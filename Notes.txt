@@ -43,3 +43,10 @@ Walk
   6 16x24, 249x11
   7 16x22, 272x13
   8 16x22, 298x13
+
+Animation system and Textures
+-Animation system has Update and Render functions
+-TextureData is simple POD struct
+-TextureData is vectors of loaded data. Animation system shouldn't need to know how many frames there are for each "strip".
+-Something needs to sit between the Animation system and the raw data. Animation system should just say "AdvanceFrame" and this other system knows the size of the current
+ tex strip, modulos if needed.

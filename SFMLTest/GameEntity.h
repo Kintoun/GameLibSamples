@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Animation.h"
 #include "Textures.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
 namespace Engine {
+
 class GameEntity
 {
 public:
@@ -45,24 +47,13 @@ public:
 	virtual bool Render(sf::RenderWindow& window, float interpolation) override;
 	//virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	const sf::Vector2f& GetRenderPos() const { return m_sprite.getPosition(); }
+	const sf::Vector2f& GetRenderPos() const;
 
 private:
-	bool m_movingUp;
-	bool m_movingDown;
-	bool m_movingLeft;
-	bool m_movingRight;
+	// TODO: Use an enum here
+	unsigned int m_moveDirection;
 
-	PlayerTexData texData;
-	
-	sf::Texture m_texture;
-
-	// The drawable obj. Note that the sprites position is NOT
-	// the objs position. The sprite is used for rendering,
-	// the position is in the position vector.
-	sf::Sprite m_sprite;
-
-	std::vector<sf::Vector2u> m_walkVec;
+	Animation m_animation;
 };
 
 class DebugTextEntity : public GameEntity

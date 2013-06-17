@@ -31,7 +31,7 @@ bool HandleWindowEvents(sf::RenderWindow& window)
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Test");
+	sf::RenderWindow window(sf::VideoMode(Engine::k_windowWidth, Engine::k_windowHeight), "Test");
 
 	// Don't update more than 5 times per loop if falling behind on updating game state
     const int MAXFRAMESKIP = 5;
@@ -41,7 +41,7 @@ int main()
     
 	Engine::UnitEntity player;
 	sf::Texture bgtexture;
-	bgtexture.loadFromFile("resources/lttp_map39.png", sf::IntRect(200, 200, WINDOW_WIDTH, WINDOW_HEIGHT));
+	bgtexture.loadFromFile("resources/lttp_map39.png", sf::IntRect(200, 200, Engine::k_windowWidth, Engine::k_windowHeight));
 	sf::Sprite background;
 	background.setTexture(bgtexture);
 	background.setScale(2.0f, 2.0f);
