@@ -34,7 +34,7 @@ Interpolation with speed/movement:
 Link sprite sheet breakdown:
 Idle 90x13
   1 16x22
-Walk
+Walk down
   1 16x22, 122x13
   2 16x23, 149x12
   3 16x24, 174x11
@@ -44,9 +44,51 @@ Walk
   7 16x22, 272x13
   8 16x22, 298x13
 
+Idle shield
+7, 209, 16, 22
+Walk up shield
+7, 239, 17, 22
+32, 237, 17, 24
+55, 239, 17, 22
+78, 239, 17, 22
+101, 238, 17, 23
+126, 239, 17, 22
+148, 237, 17, 24
+172, 240, 17, 22
+Walk down shield
+7, 209, 16, 22
+33, 209, 16, 22
+59, 208, 16, 23
+82, 207, 16, 24
+106, 209, 16, 22
+131, 209, 16, 22
+154, 208, 16, 23
+175, 207, 16, 24
+198, 209, 16, 22
+Walk left/right shield
+225, 209, 19, 23
+249, 208, 19, 24
+277, 208, 18, 24
+301, 209, 19, 23
+326, 209, 19, 23
+351, 208, 19, 24
+376, 208, 19, 24
+402, 208, 18, 24
+425, 209, 19, 23
+
 Animation system and Textures
 -Animation system has Update and Render functions
 -TextureData is simple POD struct
 -TextureData is vectors of loaded data. Animation system shouldn't need to know how many frames there are for each "strip".
 -Something needs to sit between the Animation system and the raw data. Animation system should just say "AdvanceFrame" and this other system knows the size of the current
  tex strip, modulos if needed.
+
+For my player character I should have 1 sprite and 1 texture. A SpriteSheet should contain a pointer to the sprite and a pointer to the texture and a list of rects. The rects
+make up each animation frame.
+Ideally I want a boost circular array which I can simply say textureData->IncrementWalking().
+This function would simply advance the circular array pointer to the next element.
+That element
+
+On a new change of direction I would call TextureStrip.Reset() which sets the circular array back to 0.
+This would change the 1 sprite by calling setTexRect
+If I know I'm not changing direction I would call AdvanceFrame which simply increments the circular array and changes the sprite accordingly

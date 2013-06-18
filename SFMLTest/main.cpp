@@ -98,7 +98,7 @@ int main()
 		}
 
         window.clear();
-		//window.draw(background);
+		window.draw(background);
 		for (Engine::GameEntity* e : entities)
 		{
 			e->Render(window, interpolation);
