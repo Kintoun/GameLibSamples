@@ -11,8 +11,6 @@ UnitEntity::UnitEntity() :
 {
 	m_pos = sf::Vector2f(k_windowWidth / 2, k_windowHeight / 2);
 	m_prevPos = m_pos;
-
-	// TODO: Set starting position of Unit here.
 	 
 	m_baseSpeed = 11.0f;
 }
