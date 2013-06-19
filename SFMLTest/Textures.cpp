@@ -103,8 +103,49 @@ PlayerTexData::PlayerTexData() : TextureData("resources/Link-LTTP.gif")
 	leftStrip.push_back(sf::IntRect(425+19, 209, -19, 23));
 	walkDirStrip[DirectionIndex::LEFT_IDX] = leftStrip;
 
+	// Attack
+	DirectionalStrips attackDirStrip;
+
+	// Attack Up
+	AnimationStrip upAtkStrip;
+	upAtkStrip.push_back(sf::IntRect(517, 243, 22, 22));
+	upAtkStrip.push_back(sf::IntRect(546, 235, 22, 30));
+	upAtkStrip.push_back(sf::IntRect(582, 230, 20, 36));
+	upAtkStrip.push_back(sf::IntRect(611, 235, 24, 30));
+	upAtkStrip.push_back(sf::IntRect(643, 242, 32, 23));
+	attackDirStrip[DirectionIndex::UP_IDX] = upAtkStrip;
+
+	// Attack Down
+	AnimationStrip downAtkStrip;
+	downAtkStrip.push_back(sf::IntRect(510, 282, 20, 23));
+	downAtkStrip.push_back(sf::IntRect(542, 283, 22, 24));
+	downAtkStrip.push_back(sf::IntRect(571, 282, 20, 31));
+	downAtkStrip.push_back(sf::IntRect(598, 283, 20, 31));
+	downAtkStrip.push_back(sf::IntRect(624, 284, 28, 29));
+	downAtkStrip.push_back(sf::IntRect(661, 284, 32, 27));
+	attackDirStrip[DirectionIndex::DOWN_IDX] = downAtkStrip;
+
+	// Attack Left
+	AnimationStrip leftAtkStrip;
+	leftAtkStrip.push_back(sf::IntRect(519, 192, 16, 23));
+	leftAtkStrip.push_back(sf::IntRect(546, 191, 23, 24));
+	leftAtkStrip.push_back(sf::IntRect(574, 194, 29, 21));
+	leftAtkStrip.push_back(sf::IntRect(652, 193, 28, 28));
+	leftAtkStrip.push_back(sf::IntRect(681, 193, 23, 31));
+	attackDirStrip[DirectionIndex::LEFT_IDX] = leftAtkStrip;
+
+	// Attack Right (flipped)
+	AnimationStrip rightAtkStrip;
+	rightAtkStrip.push_back(sf::IntRect(519+23, 192, 16, -23));
+	rightAtkStrip.push_back(sf::IntRect(546+24, 191, 23, -24));
+	rightAtkStrip.push_back(sf::IntRect(574+21, 194, 29, -21));
+	rightAtkStrip.push_back(sf::IntRect(652+28, 193, 28, -28));
+	rightAtkStrip.push_back(sf::IntRect(681+31, 193, 23, -31));
+	attackDirStrip[DirectionIndex::RIGHT_IDX] = rightAtkStrip;
+
 	m_animations[AnimationType::IDLE] = idleDirStrip;
 	m_animations[AnimationType::WALK] = walkDirStrip;
+	m_animations[AnimationType::ATTACK] = attackDirStrip;
 
 	/*
 	// left is same as right just flipped

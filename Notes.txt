@@ -75,6 +75,27 @@ Walk left/right shield
 376, 208, 19, 24
 402, 208, 18, 24
 425, 209, 19, 23
+Attack left/right
+519, 192, 16, 23
+546, 191, 23, 24
+574, 194, 29, 21
+611, 194, 31, 21
+652, 193, 28, 28
+681, 193, 23, 31
+Attack up
+517, 243, 22, 22
+546, 235, 22, 30
+582, 230, 20, 36
+611, 235, 24, 30
+643, 242, 32, 23
+Attack down
+510, 282, 20, 23
+542, 283, 22, 24
+571, 282, 20, 31
+598, 283, 20, 31
+624, 284, 28, 29
+661, 284, 32, 27
+
 
 Animation system and Textures
 -Animation system has Update and Render functions
@@ -92,3 +113,16 @@ That element
 On a new change of direction I would call TextureStrip.Reset() which sets the circular array back to 0.
 This would change the 1 sprite by calling setTexRect
 If I know I'm not changing direction I would call AdvanceFrame which simply increments the circular array and changes the sprite accordingly
+
+Animation system keyboard direction input vs unit state:
+Animation should just need to know the animation type. WALK UP, WALK DOWN, WALK LEFT, WALK RIGHT, IDLE, ATTACK UP, ATTACK DOWN, ATTACK LEFT, ATTACK RIGHT Or maybe I just pass
+the facing and type. i.e. LEFT, ATTACK
+Or animation system can track my facing?
+
+Animations should be the result of this Units data. NOT keyboard data. For example if I want "mind" effect on a char then how would I animate that without keyboard input? So my
+UnitEntity would have facing, attacking, etc flags. Animation system would take in that state and determine what needs to be animated.
+What if I am attacking and moving at the same time? Pass the entire state into the animation system, let it figure out priorities. Link can attack while moving.
+
+This might also solve my "last facing" problem. The animation system can cache that to detemrine animation priorities for movement.
+
+Keep in mind my UnitEntity should have as little data of it's own as possible. It needs to simply be a conglomerate of other systems and data. For that matter I need to create PlayerEntity.

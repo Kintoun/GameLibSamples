@@ -9,7 +9,8 @@ namespace Engine {
 enum class AnimationType
 {
 	IDLE,
-	WALK
+	WALK,
+	ATTACK
 };
 
 enum class TextureSet
