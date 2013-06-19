@@ -11,6 +11,18 @@ enum Direction
 	RIGHT	= 0x0008
 };
 
+enum DirectionIndex
+{
+	NONE = -1,
+
+	UP_IDX = 0,
+	DOWN_IDX,
+	LEFT_IDX,
+	RIGHT_IDX,
+
+	NUM_IDX
+};
+
 extern const unsigned int k_windowWidth;
 extern const unsigned int k_windowHeight;
 

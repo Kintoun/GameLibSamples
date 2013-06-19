@@ -11,9 +11,10 @@ UnitEntity::UnitEntity() :
 {
 	m_pos = sf::Vector2f(k_windowWidth / 2, k_windowHeight / 2);
 	m_prevPos = m_pos;
-	//m_sprite.setPosition(m_pos);
+
+	// TODO: Set starting position of Unit here.
 	 
-	m_baseSpeed = 10.0f;
+	m_baseSpeed = 11.0f;
 }
 
 bool UnitEntity::Update()
@@ -80,10 +81,7 @@ bool UnitEntity::Render(sf::RenderWindow& window, float interpolation)
 
 const sf::Vector2f& UnitEntity::GetRenderPos() const
 {
-	if (m_animation.GetSprite())
-		return m_animation.GetSprite()->getPosition();
-	else
-		return sf::Vector2f(); // TODO: Yea, don't do this...
+	return m_animation.GetSprite().getPosition();
 }
 
 DebugTextEntity::DebugTextEntity(const UnitEntity& player) :

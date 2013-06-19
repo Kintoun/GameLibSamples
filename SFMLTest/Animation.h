@@ -7,12 +7,6 @@
 
 namespace Engine {
 
-enum class AnimationType
-{
-	IDLE,
-	WALK
-};
-
 class Animation
 {
 public:
@@ -22,16 +16,21 @@ public:
 	void Update(unsigned int direction);
 	void Render(sf::RenderWindow& window, const sf::Vector2f& position);
 
-	sf::Sprite* GetSprite() const;
+	const sf::Sprite& GetSprite() const;
 
 private:
-	void SetAnimation(AnimationType type, unsigned int direction, unsigned int frame = 0);
-
 	void ChangeDirection(unsigned int direction);
 	void AdvanceFrame();
+	void SetAnimation(AnimationType type, unsigned int direction, unsigned int frame = 0);
+	const std::vector<sf::IntRect>& GetAnimationStrip(AnimationType type, unsigned int direction);
+	void UpdateSprite(const sf::IntRect& rect);
 
-	// Our raw texture data
-	TextureData* texData;
+	// Our renderable obj.
+	sf::Sprite m_sprite;
+
+	// Our raw texture data. The sprite sheet and the IntRects for each
+	// frame of animation.
+	TextureData* m_texData;
 	
 	// Direction of the moving object, so we know which texture data to use.
 	unsigned int m_direction;
@@ -46,6 +45,7 @@ private:
 	unsigned int m_aniFrame;
 
 	// How many frames there are for the currently animating set
+	// TODO: Get rid of this, use a boost::circularList
 	unsigned int m_currentFrameSetSize;
 
 	// How many game updates occur before we advance our animation frame
