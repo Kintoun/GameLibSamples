@@ -41,10 +41,10 @@ PlayerTexData::PlayerTexData() : TextureData("resources/Link-LTTP.gif")
 	idleDownStrip.push_back(sf::IntRect(7, 209, 16, 22));
 	idleLeftStrip.push_back(sf::IntRect(225+19, 209, -19, 23));
 	idleRightStrip.push_back(sf::IntRect(225, 209, 19, 23));
-	idleDirStrip[DirectionIndex::UP_IDX] = idleUpStrip;
-	idleDirStrip[DirectionIndex::DOWN_IDX] = idleDownStrip;
-	idleDirStrip[DirectionIndex::LEFT_IDX] = idleLeftStrip;
-	idleDirStrip[DirectionIndex::RIGHT_IDX] = idleRightStrip;
+	idleDirStrip[Facing::NORTH] = idleUpStrip;
+	idleDirStrip[Facing::SOUTH] = idleDownStrip;
+	idleDirStrip[Facing::WEST] = idleLeftStrip;
+	idleDirStrip[Facing::EAST] = idleRightStrip;
 
 	// Walking
 	DirectionalStrips walkDirStrip;
@@ -61,7 +61,7 @@ PlayerTexData::PlayerTexData() : TextureData("resources/Link-LTTP.gif")
 	upStrip.push_back(sf::IntRect(126, 239, 17, 22)); // 5
 	upStrip.push_back(sf::IntRect(148, 237, 17, 24)); // 6
 	upStrip.push_back(sf::IntRect(172, 240, 17, 22)); // 7
-	walkDirStrip[DirectionIndex::UP_IDX] = upStrip;
+	walkDirStrip[Facing::NORTH] = upStrip;
 
 	// Walking Down
 	AnimationStrip downStrip;
@@ -74,7 +74,7 @@ PlayerTexData::PlayerTexData() : TextureData("resources/Link-LTTP.gif")
 	downStrip.push_back(sf::IntRect(154, 208, 16, 23));
 	downStrip.push_back(sf::IntRect(175, 207, 16, 24));
 	//downStrip.push_back(sf::IntRect(198, 209, 16, 22)); // repeat of 1st frame
-	walkDirStrip[DirectionIndex::DOWN_IDX] = downStrip;
+	walkDirStrip[Facing::SOUTH] = downStrip;
 
 	// Walking Right
 	AnimationStrip rightStrip;
@@ -87,7 +87,7 @@ PlayerTexData::PlayerTexData() : TextureData("resources/Link-LTTP.gif")
 	//rightStrip.push_back(sf::IntRect(376, 208, 19, 24)); // Duplicate sprite
 	rightStrip.push_back(sf::IntRect(402, 208, 18, 24));
 	rightStrip.push_back(sf::IntRect(425, 209, 19, 23));
-	walkDirStrip[DirectionIndex::RIGHT_IDX] = rightStrip;
+	walkDirStrip[Facing::EAST] = rightStrip;
 
 	// Walking Left
 	AnimationStrip leftStrip;
@@ -101,7 +101,7 @@ PlayerTexData::PlayerTexData() : TextureData("resources/Link-LTTP.gif")
 	//leftStrip.push_back(sf::IntRect(376+19, 208, -19, 24)); // Duplicate sprite
 	leftStrip.push_back(sf::IntRect(402+19, 208, -18, 24));
 	leftStrip.push_back(sf::IntRect(425+19, 209, -19, 23));
-	walkDirStrip[DirectionIndex::LEFT_IDX] = leftStrip;
+	walkDirStrip[Facing::WEST] = leftStrip;
 
 	// Attack
 	DirectionalStrips attackDirStrip;
@@ -113,7 +113,7 @@ PlayerTexData::PlayerTexData() : TextureData("resources/Link-LTTP.gif")
 	upAtkStrip.push_back(sf::IntRect(582, 230, 20, 36));
 	upAtkStrip.push_back(sf::IntRect(611, 235, 24, 30));
 	upAtkStrip.push_back(sf::IntRect(643, 242, 32, 23));
-	attackDirStrip[DirectionIndex::UP_IDX] = upAtkStrip;
+	attackDirStrip[Facing::NORTH] = upAtkStrip;
 
 	// Attack Down
 	AnimationStrip downAtkStrip;
@@ -123,7 +123,7 @@ PlayerTexData::PlayerTexData() : TextureData("resources/Link-LTTP.gif")
 	downAtkStrip.push_back(sf::IntRect(598, 283, 20, 31));
 	downAtkStrip.push_back(sf::IntRect(624, 284, 28, 29));
 	downAtkStrip.push_back(sf::IntRect(661, 284, 32, 27));
-	attackDirStrip[DirectionIndex::DOWN_IDX] = downAtkStrip;
+	attackDirStrip[Facing::SOUTH] = downAtkStrip;
 
 	// Attack Left
 	AnimationStrip leftAtkStrip;
@@ -132,16 +132,16 @@ PlayerTexData::PlayerTexData() : TextureData("resources/Link-LTTP.gif")
 	leftAtkStrip.push_back(sf::IntRect(574, 194, 29, 21));
 	leftAtkStrip.push_back(sf::IntRect(652, 193, 28, 28));
 	leftAtkStrip.push_back(sf::IntRect(681, 193, 23, 31));
-	attackDirStrip[DirectionIndex::LEFT_IDX] = leftAtkStrip;
+	attackDirStrip[Facing::WEST] = leftAtkStrip;
 
 	// Attack Right (flipped)
 	AnimationStrip rightAtkStrip;
-	rightAtkStrip.push_back(sf::IntRect(519+23, 192, 16, -23));
-	rightAtkStrip.push_back(sf::IntRect(546+24, 191, 23, -24));
-	rightAtkStrip.push_back(sf::IntRect(574+21, 194, 29, -21));
-	rightAtkStrip.push_back(sf::IntRect(652+28, 193, 28, -28));
-	rightAtkStrip.push_back(sf::IntRect(681+31, 193, 23, -31));
-	attackDirStrip[DirectionIndex::RIGHT_IDX] = rightAtkStrip;
+	rightAtkStrip.push_back(sf::IntRect(519+16, 192, -16, 23));
+	rightAtkStrip.push_back(sf::IntRect(546+23, 191, -23, 24));
+	rightAtkStrip.push_back(sf::IntRect(574+29, 194, -29, 21));
+	rightAtkStrip.push_back(sf::IntRect(652+28, 193, -28, 28));
+	rightAtkStrip.push_back(sf::IntRect(681+23, 193, -23, 31));
+	attackDirStrip[Facing::EAST] = rightAtkStrip;
 
 	m_animations[AnimationType::IDLE] = idleDirStrip;
 	m_animations[AnimationType::WALK] = walkDirStrip;

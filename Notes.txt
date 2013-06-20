@@ -126,3 +126,9 @@ What if I am attacking and moving at the same time? Pass the entire state into t
 This might also solve my "last facing" problem. The animation system can cache that to detemrine animation priorities for movement.
 
 Keep in mind my UnitEntity should have as little data of it's own as possible. It needs to simply be a conglomerate of other systems and data. For that matter I need to create PlayerEntity.
+
+Getting rid of Constants.h and multiple Direction types:
+I am using too many "direction" types. I have keyboard input which needs to track keyboard combinations. Then that needs to be distilled into a facing which MUST select a single direction
+for the purposes of animation.
+
+When animating, Update has facing and event. Change of event or facing will reset animation count and AnimationStrip. 

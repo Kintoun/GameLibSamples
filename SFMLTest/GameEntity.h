@@ -2,6 +2,7 @@
 
 #include "Animation.h"
 #include "Textures.h"
+#include "Direction.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -11,7 +12,7 @@ namespace Engine {
 class GameEntity
 {
 public:
-	GameEntity() : m_baseSpeed(0.0f), k_diagonalFactor(0.7071f) {}
+	GameEntity() : m_baseSpeed(0.0f), k_diagonalFactor(0.7071f), m_facing(Facing::SOUTH) {}
 
 	// Sets the state of an obj. Includes position, speed, direction, etc.
 	// Called once per game tick NOT once per render call.
@@ -35,6 +36,10 @@ protected:
 	sf::Vector2f m_velocity;
 	// Our base speed
 	float m_baseSpeed;
+
+	// Our facing based on input
+	Facing m_facing;
+
 	const float k_diagonalFactor;
 };
 

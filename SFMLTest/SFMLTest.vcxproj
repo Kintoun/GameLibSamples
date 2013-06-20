@@ -84,7 +84,9 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Constants.cpp" />
+    <ClCompile Include="Direction.cpp" />
     <ClCompile Include="GameEntity.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Textures.cpp" />
@@ -92,7 +94,10 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Direction.h" />
+    <ClInclude Include="Events.h" />
     <ClInclude Include="GameEntity.h" />
+    <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="Time.h" />

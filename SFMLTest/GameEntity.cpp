@@ -1,6 +1,8 @@
 #include "GameEntity.h"
 
 #include "Constants.h"
+#include "InputHandler.h"
+#include "Events.h"
 
 #include "Log.h"
 
@@ -17,52 +19,49 @@ UnitEntity::UnitEntity() :
 
 bool UnitEntity::Update()
 {
-	m_moveDirection = 0;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		m_moveDirection |= Direction::UP;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		m_moveDirection |= Direction::DOWN;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		m_moveDirection |= Direction::LEFT;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		m_moveDirection |= Direction::RIGHT;
+	Event event = Keyboard::KeyboardToEvent();
+	if (event & EventType::ATTACKING)
+	{
+	}
+	m_moveDirection = Keyboard::KeyboardToDirection();
 
 	// reset to base speed
 	float speed = m_baseSpeed;
 	m_velocity = sf::Vector2f();
 
 	// moving diagonally
-	if ((m_moveDirection & Direction::LEFT || m_moveDirection & Direction::RIGHT)
-		&& (m_moveDirection & Direction::DOWN || m_moveDirection & Direction::UP))
+	if (IsDiagonalDirection(m_moveDirection))
 	{
 		speed *= k_diagonalFactor;
 	}
 
 	// TODO: I'm sure there is a better mathy way to do this...
 	if (m_moveDirection & Direction::LEFT)
+	{
 		m_velocity += sf::Vector2f(-speed, 0);
+	}
 	if (m_moveDirection & Direction::DOWN)
 	{
 		m_velocity += sf::Vector2f(0, speed);
-		/*
-		if (++texData.aniDurCur > texData.aniDuration || texData.aniDurCur == 9999)
-		{
-			unsigned int aniKey = texData.aniFrame++ % texData.walkDownFrames;
-			m_texture.loadFromFile(texData.GetSheet(), texData.walkDownRects[aniKey]);
-			texData.aniDurCur = 0;
-		}
-		*/
 	}
 	if (m_moveDirection & Direction::RIGHT)
+	{
 		m_velocity += sf::Vector2f(speed, 0);
+	}
 	if (m_moveDirection & Direction::UP)
+	{
 		m_velocity += sf::Vector2f(0, -speed);
+	}
 
 	m_prevPos = m_pos;
 	m_pos += m_velocity;
 	//LOGDEBUG << "Position X: " << m_pos.x << " Y: " << m_pos.y;
 
-	m_animation.Update(m_moveDirection);
+	// It's OK for us not to get a new direction.
+	DirectionToFacing(m_moveDirection, m_facing);
+
+	// Pass entity state to animation system so it knows what to animate
+	m_animation.Update(m_facing, event);
 
 	return true;
 }

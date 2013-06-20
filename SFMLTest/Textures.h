@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Constants.h"
+#include "Direction.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -21,7 +21,7 @@ enum class TextureSet
 };
 
 typedef std::vector<sf::IntRect> AnimationStrip;
-typedef std::map<DirectionIndex, AnimationStrip> DirectionalStrips;
+typedef std::map<Facing, AnimationStrip> DirectionalStrips;
 typedef std::map<AnimationType, DirectionalStrips> Animations;
 
 // TODO: Use autocode generation and compile time constructed objs

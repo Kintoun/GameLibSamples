@@ -2,6 +2,7 @@
 
 #include "Textures.h"
 #include "Constants.h"
+#include "Events.h"
 
 #include <SFML/System.hpp>
 
@@ -13,16 +14,14 @@ public:
 	Animation(TextureSet set, unsigned int ticksPerFrame);
 	~Animation();
 
-	void Update(unsigned int direction);
+	void Update(Facing facing, Event event);
 	void Render(sf::RenderWindow& window, const sf::Vector2f& position);
 
 	const sf::Sprite& GetSprite() const;
 
 private:
-	void ChangeDirection(unsigned int direction);
-	void AdvanceFrame();
-	void SetAnimation(AnimationType type, unsigned int direction, unsigned int frame = 0);
-	const std::vector<sf::IntRect>& GetAnimationStrip(AnimationType type, unsigned int direction);
+	AnimationType Animation::EventToAnimationType(Event event);
+	void SetAnimation(AnimationType type, Facing facing, unsigned int frame = 0);
 	void UpdateSprite(const sf::IntRect& rect);
 
 	// Our renderable obj.
@@ -32,8 +31,8 @@ private:
 	// frame of animation.
 	TextureData* m_texData;
 	
-	// Direction of the moving object, so we know which texture data to use.
-	unsigned int m_direction;
+	// facing of the moving object, so we know which texture data to use.
+	Facing m_facing;
 
 	// Current animation type
 	AnimationType m_type;

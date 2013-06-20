@@ -7,7 +7,7 @@
 namespace Engine {
 
 Animation::Animation(TextureSet set, unsigned int ticksPerFrame) : 
-	m_direction(0), m_aniCount(0), m_aniFrame(0), m_currentFrameSetSize(0),
+	m_facing(Facing::SOUTH), m_aniCount(0), m_aniFrame(0), m_currentFrameSetSize(0),
 	m_ticksPerFrame(ticksPerFrame)
 {
 	// TODO: Read scale from texData
@@ -15,7 +15,7 @@ Animation::Animation(TextureSet set, unsigned int ticksPerFrame) :
 	m_sprite.setTexture(m_texData->texture);
 	m_sprite.setScale(4.0f, 4.0f);
 
-	SetAnimation(AnimationType::IDLE, Direction::DOWN);
+	SetAnimation(AnimationType::IDLE, Facing::SOUTH);
 }
 
 Animation::~Animation()
@@ -23,15 +23,32 @@ Animation::~Animation()
 	delete m_texData;
 }
 
-void Animation::Update(unsigned int direction)
+void Animation::Update(Facing facing, Event event)
 {
-	if (direction != m_direction)
+	AnimationType type = EventToAnimationType(event);
+
+	// Are we changing to a new animation base don input?
+	if (facing != m_facing || type != m_type)
 	{
-		ChangeDirection(direction);
+		// Set to new animation type and facing
+		m_type = type;
+		m_facing = facing;
+		m_aniFrame = 0;
+		SetAnimation(m_type, m_facing, m_aniFrame);
 	}
 	else
-	{	
-		AdvanceFrame();
+	{
+		// Same animation and facing, just advance frame if needed
+		if (m_currentFrameSetSize > 1)
+		{
+			m_aniCount++;
+			if (m_aniCount >= m_ticksPerFrame)
+			{
+				// Advance frame and set new animation frame.
+				m_aniFrame = ++m_aniFrame % m_currentFrameSetSize;
+				SetAnimation(m_type, m_facing, m_aniFrame);
+			}
+		}
 	}
 }
 
@@ -44,33 +61,19 @@ void Animation::Render(sf::RenderWindow& window, const sf::Vector2f& position)
 	}
 }
 
-void Animation::ChangeDirection(unsigned int direction)
+AnimationType Animation::EventToAnimationType(Event event)
 {
-	if (direction == 0)
-	{
-		// User previous direction as our "facing"
-		SetAnimation(AnimationType::IDLE, m_direction);
-	}
+	// Priority matters here!
+	if (event & EventType::ATTACKING)
+		return AnimationType::ATTACK;
+	if (event & EventType::MOVING)
+		return AnimationType::WALK;
+	if (event == EventType::NO_EVENT)
+		return AnimationType::IDLE;
 	else
 	{
-		SetAnimation(AnimationType::WALK, direction);
-	}
-
-	m_aniFrame = 0;
-	m_direction = direction;
-}
-
-void Animation::AdvanceFrame()
-{
-	// Nothing to advance if we don't have additional frames.
-	if (m_currentFrameSetSize > 1)
-	{
-		m_aniCount++;
-		if (m_aniCount >= m_ticksPerFrame)
-		{
-			m_aniFrame = ++m_aniFrame % m_currentFrameSetSize;
-			SetAnimation(m_type, m_direction, m_aniFrame);
-		}
+		LOGERROR << "Unable to process EventType: " << event;
+		return AnimationType::IDLE;
 	}
 }
 
@@ -86,36 +89,20 @@ void Animation::UpdateSprite(const sf::IntRect& rect)
 	m_sprite.setOrigin(std::abs(rect.width)/2, std::abs(rect.height));
 }
 
-DirectionIndex MakeDirectionIndexable(unsigned int direction, unsigned int prevDirection)
+void Animation::SetAnimation(AnimationType type, Facing facing, unsigned int frame)
 {
-	if (direction & Direction::UP)
-		return DirectionIndex::UP_IDX;
-	if (direction & Direction::DOWN)
-		return DirectionIndex::DOWN_IDX;
-	if (direction & Direction::LEFT)
-		return DirectionIndex::LEFT_IDX;
-	if (direction & Direction::RIGHT)
-		return DirectionIndex::RIGHT_IDX;
-	return DirectionIndex::DOWN_IDX; // by default no direction shows us "facing down"
-}
-
-void Animation::SetAnimation(AnimationType type, unsigned int direction, unsigned int frame)
-{
-//	LOGINFO << "SetAnimation type: " << static_cast<int>(type) << " direction: "
-//		<< direction << " frame: " << frame;
+//	LOGINFO << "SetAnimation type: " << static_cast<int>(type) << " facing: "
+//		<< facing << " frame: " << frame;
 
 	// new frame, reset our count
 	m_aniCount = 0;
 
-	// Lookup the texture rect for this type, direction, frame
-	DirectionIndex dirIndex = MakeDirectionIndexable(direction, m_direction);
-	AnimationStrip& animStrip = m_texData->m_animations[type][dirIndex];
+	// Lookup the texture rect for this type, facing, frame
+	AnimationStrip& animStrip = m_texData->m_animations[type][facing];
 	m_currentFrameSetSize = animStrip.size();
 
 	assert(frame < m_currentFrameSetSize);
 	UpdateSprite(animStrip[frame]);
-
-	m_type = type;
 }
 
 } //namespace Engine
