@@ -20,7 +20,8 @@ public:
 	const sf::Sprite& GetSprite() const;
 
 private:
-	AnimationType Animation::EventToAnimationType(Event event);
+	AnimationType EventToAnimationType(Event event);
+	bool IsUninterruptableAnimation(AnimationType type);
 	void SetAnimation(AnimationType type, Facing facing, unsigned int frame = 0);
 	void UpdateSprite(const sf::IntRect& rect);
 
@@ -36,6 +37,9 @@ private:
 
 	// Current animation type
 	AnimationType m_type;
+
+	// How many times the current animation has looped
+	unsigned int m_aniLoops;
 
 	// How many "counts" this current animation frame has been displaying for.
 	unsigned int m_aniCount;

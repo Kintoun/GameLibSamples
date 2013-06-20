@@ -7,8 +7,8 @@
 namespace Engine {
 
 Animation::Animation(TextureSet set, unsigned int ticksPerFrame) : 
-	m_facing(Facing::SOUTH), m_aniCount(0), m_aniFrame(0), m_currentFrameSetSize(0),
-	m_ticksPerFrame(ticksPerFrame)
+	m_facing(Facing::SOUTH), m_aniLoops(0), m_aniCount(0), m_aniFrame(0),
+	m_currentFrameSetSize(0), m_ticksPerFrame(ticksPerFrame)
 {
 	// TODO: Read scale from texData
 	m_texData = TextureDataFactory::Create(set);
@@ -27,13 +27,16 @@ void Animation::Update(Facing facing, Event event)
 {
 	AnimationType type = EventToAnimationType(event);
 
-	// Are we changing to a new animation base don input?
-	if (facing != m_facing || type != m_type)
+	// Are we changing to a new animation based on input?
+	if ((facing != m_facing || type != m_type)
+		&& (!IsUninterruptableAnimation(m_type) 
+			|| (IsUninterruptableAnimation(m_type) && m_aniLoops > 0)))
 	{
 		// Set to new animation type and facing
 		m_type = type;
 		m_facing = facing;
 		m_aniFrame = 0;
+		m_aniLoops = 0;
 		SetAnimation(m_type, m_facing, m_aniFrame);
 	}
 	else
@@ -45,7 +48,11 @@ void Animation::Update(Facing facing, Event event)
 			if (m_aniCount >= m_ticksPerFrame)
 			{
 				// Advance frame and set new animation frame.
-				m_aniFrame = ++m_aniFrame % m_currentFrameSetSize;
+				if (++m_aniFrame >= m_currentFrameSetSize)
+				{
+					m_aniLoops++;
+					m_aniFrame = 0;
+				}
 				SetAnimation(m_type, m_facing, m_aniFrame);
 			}
 		}
@@ -74,6 +81,22 @@ AnimationType Animation::EventToAnimationType(Event event)
 	{
 		LOGERROR << "Unable to process EventType: " << event;
 		return AnimationType::IDLE;
+	}
+}
+
+// TODO: Turn this into a static data structure lookup "AnimationTypeData"
+bool Animation::IsUninterruptableAnimation(AnimationType type)
+{
+	switch (type)
+	{
+	case AnimationType::ATTACK:
+		return true;
+	case AnimationType::WALK:
+	case AnimationType::IDLE:
+		return false;
+	default:
+		LOGERROR << "Unknown AnimationType: " << static_cast<int>(type);
+		return false;
 	}
 }
 
