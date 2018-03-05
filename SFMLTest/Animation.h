@@ -49,7 +49,7 @@ private:
 
 	// How many frames there are for the currently animating set
 	// TODO: Get rid of this, use a boost::circularList
-	unsigned int m_currentFrameSetSize;
+	size_t m_currentFrameSetSize;
 
 	// How many game updates occur before we advance our animation frame
 	unsigned int m_ticksPerFrame;

@@ -89,14 +89,14 @@ DebugTextEntity::DebugTextEntity(const UnitEntity& player) :
 	m_playerPosText = sf::Text("", m_font, 20);
 	m_playerRenderPosText = sf::Text("", m_font, 20);
 	
-	m_fpsText.setColor(sf::Color::Green);
+	m_fpsText.setFillColor(sf::Color::Green);
 	m_fpsText.setStyle(sf::Text::Bold);
 
-	m_playerPosText.setColor(sf::Color::Green);
+	m_playerPosText.setFillColor(sf::Color::Green);
 	m_playerPosText.setStyle(sf::Text::Bold);
 	m_playerPosText.setPosition(0, 30);
 
-	m_playerRenderPosText.setColor(sf::Color::Green);
+	m_playerRenderPosText.setFillColor(sf::Color::Green);
 	m_playerRenderPosText.setStyle(sf::Text::Bold);
 	m_playerRenderPosText.setPosition(0, 60);
 }
